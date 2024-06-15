@@ -31,16 +31,19 @@
             const session = new onnx.InferenceSession();
             await session.loadModel(modelUrl);
             
+            console.log('Model loaded successfully');
             return session;
         }
 
         async function predictCost(session, watermelons, apples, grapes) {
             // Prepare the input tensor
             const inputTensor = new onnx.Tensor(new Float32Array([watermelons, apples, grapes]), 'float32', [1, 3]);
-            
+            console.log('Input Tensor:', inputTensor);
+
             // Run the inference
             const outputMap = await session.run({ 'onnx::Gemm_0': inputTensor });
-            
+            console.log('Output Map:', outputMap);
+
             // Display the entire output map structure
             document.getElementById('predictionResult').innerText = JSON.stringify(outputMap, null, 2);
         }
