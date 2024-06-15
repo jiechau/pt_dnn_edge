@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ONNX.js Model Inference</title>
+    <title>ONNX Model Inference</title>
     <script src="https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js"></script>
 </head>
 <body>
-    <h1>Predict Fruit Cost using ONNX.js</h1>
+    <h1>Predict Fruit Cost using ONNX</h1>
     <form id="fruitForm">
         <label for="watermelons">Watermelons:</label>
         <input type="number" id="watermelons" name="watermelons" min="1" max="10" value="1" required>個。 每個 100 元。<br><br>
@@ -24,41 +24,27 @@
 
     <script>
         async function loadModel() {
-            // Load the ONNX model
-            const session = new onnx.InferenceSession();
-            await session.loadModel('./model.onnx'); // Ensure model.onnx is hosted at this location
+            const session = await onnx.loadModel('model.onnx');
             return session;
         }
 
         async function predictCost(session, watermelons, apples, grapes) {
             // Prepare the input tensor
-            const inputData = new Float32Array([watermelons, apples, grapes]);
-            const inputTensor = new onnx.Tensor(inputData, 'float32', [1, 3]);
-
-            // Check input names
-            const inputNames = session.inputNames;
-            console.log("Input Names:", inputNames);
-
-            // Run inference
-            const outputMap = await session.run({ [inputNames[0]]: inputTensor });
+            const inputTensor = new onnx.Tensor([1, 3], 'float32', new Float32Array([watermelons, apples, grapes]));
             
-            // Check and log the structure of outputMap
-            console.log("Output Map:", outputMap);
-
-            // Assuming the output tensor is the first value in the map
-            const outputTensor = outputMap[Object.keys(outputMap)[0]];
+            // Feed the input tensor to the model
+            const inputFeedDict = { 'onnx::Gemm_0': inputTensor };
             
-            // Check and log the structure of outputTensor
-            console.log("Output Tensor:", outputTensor);
-
+            // Run the model
+            const outputFeedDict = await session.run(inputFeedDict);
+            
             // Extract the prediction value
-            const predictedValue = outputTensor.data[0];
+            const predictedValue = outputFeedDict['11'].data[0];
             
             // Return the predicted value
             return predictedValue;
         }
 
-        // When the form is submitted
         document.getElementById('fruitForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             
@@ -67,7 +53,7 @@
             const apples = parseInt(document.getElementById('apples').value);
             const grapes = parseInt(document.getElementById('grapes').value);
             
-            // Load the model
+            // Load the ONNX model
             const session = await loadModel();
             
             // Predict the cost
