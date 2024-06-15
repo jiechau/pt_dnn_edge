@@ -41,18 +41,8 @@
             // Run the inference
             const outputMap = await session.run({ 'onnx::Gemm_0': inputTensor });
             
-            // Log the output map keys for debugging
-            console.log('Output Map Keys:', Object.keys(outputMap));
-            
-            // Extract the first key in the output map for prediction
-            const outputKey = Object.keys(outputMap)[0];
-            if (!outputMap[outputKey]) {
-                throw new Error(`Output tensor ${outputKey} not found in the output map`);
-            }
-            const prediction = outputMap[outputKey].data[0];
-            
-            // Return the predicted value
-            return prediction;
+            // Display the entire output map structure
+            document.getElementById('predictionResult').innerText = JSON.stringify(outputMap, null, 2);
         }
 
         // When the form is submitted
@@ -69,10 +59,7 @@
                 const session = await loadModel();
                 
                 // Predict the cost
-                const predictedCost = await predictCost(session, watermelons, apples, grapes);
-                
-                // Display the result
-                document.getElementById('predictionResult').innerText = `Predicted Cost: $${predictedCost.toFixed(2)}`;
+                await predictCost(session, watermelons, apples, grapes);
             } catch (error) {
                 document.getElementById('predictionResult').innerText = `Error: ${error.message}`;
                 console.error(error);
