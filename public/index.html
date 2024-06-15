@@ -34,11 +34,19 @@
             // Prepare the input tensor
             const inputData = new Float32Array([watermelons, apples, grapes]);
             const inputTensor = new onnx.Tensor(inputData, 'float32', [1, 3]);
-            
+
             // Run inference
             const outputMap = await session.run({ input: inputTensor });
-            const outputTensor = outputMap.values().next().value;
             
+            // Check and log the structure of outputMap
+            console.log("Output Map:", outputMap);
+
+            // Assuming the output tensor is the first value in the map
+            const outputTensor = outputMap[Object.keys(outputMap)[0]];
+            
+            // Check and log the structure of outputTensor
+            console.log("Output Tensor:", outputTensor);
+
             // Extract the prediction value
             const predictedValue = outputTensor.data[0];
             
