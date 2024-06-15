@@ -44,8 +44,8 @@
             // Log the output map keys for debugging
             console.log('Output Map Keys:', Object.keys(outputMap));
             
-            // Extract the prediction value
-            const outputKey = '11';
+            // Extract the first key in the output map for prediction
+            const outputKey = Object.keys(outputMap)[0];
             if (!outputMap[outputKey]) {
                 throw new Error(`Output tensor ${outputKey} not found in the output map`);
             }
