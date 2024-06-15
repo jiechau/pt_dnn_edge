@@ -32,6 +32,8 @@
             await session.loadModel(modelUrl);
             
             console.log('Model loaded successfully');
+            console.log('Model Input Names:', session.inputNames);
+            console.log('Model Output Names:', session.outputNames);
             return session;
         }
 

@@ -4,9 +4,9 @@
     const session = new onnx.InferenceSession();
     session.loadModel("./model.onnx").then(() => {
         // Construct the input tensor
-        const watermelons = 1; // Replace with the desired input values
+        const watermelons = 3; // Replace with the desired input values
         const apples = 2;
-        const grapes = 5;
+        const grapes = 7;
         const input = new onnx.Tensor(new Float32Array([watermelons, apples, grapes]), 'float32', [1, 3]);
 
         // Run the inference
