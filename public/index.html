@@ -23,44 +23,46 @@
     <p id="predictionResult" style="color: red;">Please enter quantities and click "Predict Cost"</p>
 
     <script>
-        async function loadModel() {
-            const session = await onnx.loadModel('model.onnx');
-            return session;
-        }
+        document.addEventListener('DOMContentLoaded', async function() {
+            async function loadModel() {
+                const session = await onnx.loadModel('model.onnx');
+                return session;
+            }
 
-        async function predictCost(session, watermelons, apples, grapes) {
-            // Prepare the input tensor
-            const inputTensor = new onnx.Tensor([1, 3], 'float32', new Float32Array([watermelons, apples, grapes]));
-            
-            // Feed the input tensor to the model
-            const inputFeedDict = { 'onnx::Gemm_0': inputTensor };
-            
-            // Run the model
-            const outputFeedDict = await session.run(inputFeedDict);
-            
-            // Extract the prediction value
-            const predictedValue = outputFeedDict['11'].data[0];
-            
-            // Return the predicted value
-            return predictedValue;
-        }
+            async function predictCost(session, watermelons, apples, grapes) {
+                // Prepare the input tensor
+                const inputTensor = new onnx.Tensor([1, 3], 'float32', new Float32Array([watermelons, apples, grapes]));
+                
+                // Feed the input tensor to the model
+                const inputFeedDict = { 'onnx::Gemm_0': inputTensor };
+                
+                // Run the model
+                const outputFeedDict = await session.run(inputFeedDict);
+                
+                // Extract the prediction value
+                const predictedValue = outputFeedDict['11'].data[0];
+                
+                // Return the predicted value
+                return predictedValue;
+            }
 
-        document.getElementById('fruitForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            // Get the input values
-            const watermelons = parseInt(document.getElementById('watermelons').value);
-            const apples = parseInt(document.getElementById('apples').value);
-            const grapes = parseInt(document.getElementById('grapes').value);
-            
-            // Load the ONNX model
-            const session = await loadModel();
-            
-            // Predict the cost
-            const predictedCost = await predictCost(session, watermelons, apples, grapes);
-            
-            // Display the result
-            document.getElementById('predictionResult').innerText = `Predicted Cost: $${predictedCost.toFixed(2)}`;
+            document.getElementById('fruitForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                
+                // Get the input values
+                const watermelons = parseInt(document.getElementById('watermelons').value);
+                const apples = parseInt(document.getElementById('apples').value);
+                const grapes = parseInt(document.getElementById('grapes').value);
+                
+                // Load the ONNX model
+                const session = await loadModel();
+                
+                // Predict the cost
+                const predictedCost = await predictCost(session, watermelons, apples, grapes);
+                
+                // Display the result
+                document.getElementById('predictionResult').innerText = `Predicted Cost: $${predictedCost.toFixed(2)}`;
+            });
         });
     </script>
 </body>
