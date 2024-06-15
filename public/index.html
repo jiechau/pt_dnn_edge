@@ -41,8 +41,15 @@
             // Run the inference
             const outputMap = await session.run({ 'onnx::Gemm_0': inputTensor });
             
+            // Log the output map keys for debugging
+            console.log('Output Map Keys:', Object.keys(outputMap));
+            
             // Extract the prediction value
-            const prediction = outputMap['11'].data[0];
+            const outputKey = '11';
+            if (!outputMap[outputKey]) {
+                throw new Error(`Output tensor ${outputKey} not found in the output map`);
+            }
+            const prediction = outputMap[outputKey].data[0];
             
             // Return the predicted value
             return prediction;
@@ -52,19 +59,24 @@
         document.getElementById('fruitForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             
-            // Get the input values
-            const watermelons = parseInt(document.getElementById('watermelons').value);
-            const apples = parseInt(document.getElementById('apples').value);
-            const grapes = parseInt(document.getElementById('grapes').value);
-            
-            // Load the model
-            const session = await loadModel();
-            
-            // Predict the cost
-            const predictedCost = await predictCost(session, watermelons, apples, grapes);
-            
-            // Display the result
-            document.getElementById('predictionResult').innerText = `Predicted Cost: $${predictedCost.toFixed(2)}`;
+            try {
+                // Get the input values
+                const watermelons = parseInt(document.getElementById('watermelons').value);
+                const apples = parseInt(document.getElementById('apples').value);
+                const grapes = parseInt(document.getElementById('grapes').value);
+                
+                // Load the model
+                const session = await loadModel();
+                
+                // Predict the cost
+                const predictedCost = await predictCost(session, watermelons, apples, grapes);
+                
+                // Display the result
+                document.getElementById('predictionResult').innerText = `Predicted Cost: $${predictedCost.toFixed(2)}`;
+            } catch (error) {
+                document.getElementById('predictionResult').innerText = `Error: ${error.message}`;
+                console.error(error);
+            }
         });
     </script>
 </body>
