@@ -32,8 +32,6 @@
             await session.loadModel(modelUrl);
             
             console.log('Model loaded successfully');
-            console.log('Model Input Names:', session.inputNames);
-            console.log('Model Output Names:', session.outputNames);
             return session;
         }
 
@@ -43,11 +41,17 @@
             console.log('Input Tensor:', inputTensor);
 
             // Run the inference
-            const outputMap = await session.run({ 'onnx::Gemm_0': inputTensor });
+            const outputMap = await session.run([inputTensor]);
             console.log('Output Map:', outputMap);
-
-            // Display the entire output map structure
-            document.getElementById('predictionResult').innerText = JSON.stringify(outputMap, null, 2);
+            
+            // Get the output tensor
+            const outputTensor = outputMap.values().next().value;
+            
+            // Extract the prediction value
+            const prediction = outputTensor.data[0];
+            
+            // Return the predicted value
+            return prediction;
         }
 
         // When the form is submitted
@@ -64,7 +68,10 @@
                 const session = await loadModel();
                 
                 // Predict the cost
-                await predictCost(session, watermelons, apples, grapes);
+                const predictedCost = await predictCost(session, watermelons, apples, grapes);
+                
+                // Display the result
+                document.getElementById('predictionResult').innerText = `Predicted Cost: $${predictedCost.toFixed(2)}`;
             } catch (error) {
                 document.getElementById('predictionResult').innerText = `Error: ${error.message}`;
                 console.error(error);
