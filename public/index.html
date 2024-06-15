@@ -35,8 +35,12 @@
             const inputData = new Float32Array([watermelons, apples, grapes]);
             const inputTensor = new onnx.Tensor(inputData, 'float32', [1, 3]);
 
+            // Check input names
+            const inputNames = session.inputNames;
+            console.log("Input Names:", inputNames);
+
             // Run inference
-            const outputMap = await session.run({ input: inputTensor });
+            const outputMap = await session.run({ [inputNames[0]]: inputTensor });
             
             // Check and log the structure of outputMap
             console.log("Output Map:", outputMap);
