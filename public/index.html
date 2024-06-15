@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TensorFlow.js Model Inference</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <title>ONNX.js Model Inference</title>
+    <script src="https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js"></script>
 </head>
 <body>
-    <h1>Predict Fruit Cost using TensorFlow.js</h1>
+    <h1>Predict Fruit Cost using ONNX.js</h1>
     <form id="fruitForm">
         <label for="watermelons">Watermelons:</label>
         <input type="number" id="watermelons" name="watermelons" min="1" max="10" value="1" required>個。 每個 100 元。<br><br>
@@ -24,30 +24,23 @@
 
     <script>
         async function loadModel() {
-            // URL where the model.json file is hosted
-            //const modelUrl = 'https://jiechau.github.io/tf_dnn_js/model.json';
-            const modelUrl = 'model.json';
-            
-            // Load the model
-            const model = await tf.loadLayersModel(modelUrl);
-
-            // fix fix
-            // Specify input shape during model preparation
-            const inputShape = [null, 3]; // [batchSize, features]. null for dynamic batch size 
-            model.layers[0].batchInputShape = inputShape;
-
-            return model;
+            // Load the ONNX model
+            const session = new onnx.InferenceSession();
+            await session.loadModel('./model.onnx'); // Ensure model.onnx is hosted at this location
+            return session;
         }
 
-        async function predictCost(model, watermelons, apples, grapes) {
+        async function predictCost(session, watermelons, apples, grapes) {
             // Prepare the input tensor
-            const inputTensor = tf.tensor2d([[watermelons, apples, grapes]]);
+            const inputData = new Float32Array([watermelons, apples, grapes]);
+            const inputTensor = new onnx.Tensor(inputData, 'float32', [1, 3]);
             
-            // Make the prediction
-            const prediction = model.predict(inputTensor);
+            // Run inference
+            const outputMap = await session.run({ input: inputTensor });
+            const outputTensor = outputMap.values().next().value;
             
             // Extract the prediction value
-            const predictedValue = prediction.dataSync()[0];
+            const predictedValue = outputTensor.data[0];
             
             // Return the predicted value
             return predictedValue;
@@ -63,10 +56,10 @@
             const grapes = parseInt(document.getElementById('grapes').value);
             
             // Load the model
-            const model = await loadModel();
+            const session = await loadModel();
             
             // Predict the cost
-            const predictedCost = await predictCost(model, watermelons, apples, grapes);
+            const predictedCost = await predictCost(session, watermelons, apples, grapes);
             
             // Display the result
             document.getElementById('predictionResult').innerText = `Predicted Cost: $${predictedCost.toFixed(2)}`;
@@ -74,4 +67,3 @@
     </script>
 </body>
 </html>
-
