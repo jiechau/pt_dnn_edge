@@ -21,7 +21,8 @@ https://colab.research.google.com/drive/1ZOhMNefzcrAqCh0mQ8q_jgY4h7iLAKIm?usp=sh
 gitlab io 在 /public 下
 github io 在 /docs 下
 
-
+# python 3.9 onnx runtime is built with numpy<2, so:
+pip install numpy==1.23.5
 
 
 
