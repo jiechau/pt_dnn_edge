@@ -3,7 +3,6 @@
 #
 import onnxruntime as ort
 import numpy as np
-import torch
 
 DATA_NUM = 10_000
 QTY_RANGE = 10
