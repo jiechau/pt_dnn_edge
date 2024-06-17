@@ -23,6 +23,7 @@ You can inspect the model's input and output names using the following code:
 If the input name is different, replace 'input' in the run method with the correct input name.
 '''
 # Inspect input and output names
+input_name = [input.name for input in ort_session.get_inputs()][0]
 print("Input names: ", [input.name for input in ort_session.get_inputs()])
 print("Output names: ", [output.name for output in ort_session.get_outputs()])
 
@@ -38,7 +39,7 @@ exact = (watermelon_qty * watermelon_cost) + (apple_qty * apple_cost) + (grape_q
 input_data = np.array([[watermelon_qty, apple_qty, grape_qty]], dtype=np.float32)
 # Perform inference
 #outputs = ort_session.run(None, {'input': input_data})
-outputs = ort_session.run(None, {'onnx::Gemm_0': input_data})
+outputs = ort_session.run(None, {input_name: input_data})
 # Print the outputs
 print(f"{watermelon_qty} {apple_qty} {grape_qty} = {exact}, predict:{outputs[0][0].item():.0f}")
 
