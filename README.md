@@ -1,11 +1,11 @@
 
 # pt_dnn_edge
 
-![from repo](img/img1.png)
-
 - 如何利用邊緣裝置 (例如手機或是 PC 瀏覽器) 來執行模型的推理。
 - 假設模型都訓練好了，推理也正常，這裡使用 pytorch 的架構。Edge 端使用 ONNX 框架。
 - P.S. 如果使用 tensorflow keras 架構。Edgn 端使用 tensorflow.js 及 tensorflow lite。可以參考 [這裡](https://gitlab.com/jiechau/tf_dnn_edge)。
+
+![from repo](img/img1.png)
 
 ## training data / training an AI model
 
