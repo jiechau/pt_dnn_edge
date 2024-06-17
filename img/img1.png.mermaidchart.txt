@@ -1,0 +1,53 @@
+
+%% https://www.mermaidchart.com/
+%% https://imgur.com/
+
+graph LR
+
+  subgraph file_system_0["training an AI model"]
+
+
+    subgraph sub_B0["training data"]
+        B0["<img src='https://i.imgur.com/P8U7Diw.png'/>"] 
+    end
+    subgraph sub_B1["model"]
+        B1["<img src='https://i.imgur.com/n876NqC.png'/>"] 
+    end
+    subgraph sub_B2["Model Compression"]
+        B2["<img src='https://i.imgur.com/1Lbavdk.png'/>"] 
+    end
+
+  end
+  B0 --> B1
+  B1 --> B0
+  B0 --> B2
+
+  subgraph plugin3["Model file"]
+    CC2["<img src='https://i.imgur.com/pxWng07.png'/>"] 
+  end
+  B2 -->  CC2
+
+  subgraph plugin4["Model Convert"]
+    
+    D1["<img src='https://i.imgur.com/aueL9wd.png'/>"]
+    
+    subgraph sub_D2["torch.onnx.export"]
+        D2["<img src='https://i.imgur.com/aBk8UMr.png'/>"]
+    end
+  end
+  CC2 -.->  D2
+
+  subgraph TD plugin5["inference"]
+
+    subgraph sub_E0["onnxruntime"]
+        E0["<img src='https://i.imgur.com/zxyZW4t.png'/>"]
+    
+
+    E1["<img src='https://i.imgur.com/tp4WZq2.png'/>"]
+    E2["<img src='https://i.imgur.com/b8S3F3F.png'/>"]
+    E3["<img src='https://i.imgur.com/EpQXV9T.png'/>"]
+    end
+  end
+  D2 --> |model.json,*.bin| E1
+  D2 --> |model.tflite| E2
+  D2 --> |model.tflite| E3
